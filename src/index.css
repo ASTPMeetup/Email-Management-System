@@ -4,3 +4,14 @@ html, body {
   font-family: "Segoe UI";
   font-size: 16px;
 }
+
+#search_input {
+  font-size: 20px;
+  text-decoration: none;
+  border: 0;
+  border-bottom: 1px solid #e6e6e6;
+  color: #737373;
+  outline: none;
+  margin-right: 15px;
+  background-color: transparent;
+}
