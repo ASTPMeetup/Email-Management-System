@@ -1,1 +1,1 @@
-Activate app with npm start.
+Activate app with `npm start`.
