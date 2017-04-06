@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import FolderMenu from './FolderMenu';
 
 class EmailRow extends Component {
 
@@ -18,10 +19,7 @@ class EmailRow extends Component {
     };
   }
 
-  componentDidUpdate(){
-    this.handleUpdatedFolder();
-  }
-
+  //handle check box checked event
   handleCheckBoxEvent(event) {
     var targetRow = event.target.parentNode.parentNode;
     var rowSelectBox = targetRow.lastChild.firstChild;
@@ -33,36 +31,27 @@ class EmailRow extends Component {
     this.setState({checkStatus: event.target.checked});
   }
 
-  handleUpdateFolder(stateName, e) {
-      this.setState({...this.state, updatedFolder: true, [stateName]: e.target.value});
-  }
-
-  handleUpdatedFolder(props) {
-    if (this.state.updatedFolder) {
-      this.props.updateFolder(this.state.Folder, this.state._id);
-      this.setState({updatedFolder: false});
-    }
+  //update folder view if FolderMenu component updates
+  handleUpdateFolder(newFolder) {
+      this.setState({Folder: newFolder});
   }
 
    render(){
-
       return (
-        <tr role="list" className="people_list">
+        <tr role="list">
           <td role="listitem" className="checkBox"><input type="checkbox" onChange={this.handleCheckBoxEvent.bind(this)} checked={this.state.checkStatus}/></td>
           <td role="listitem">{this.state.Sender}</td>
           <td role="listitem">{this.state.Domain}</td>
           <td role="listitem">{this.state.Email}</td>
           <td role="listitem">
-            <select className="form-control" name="folder options" value={this.state.Folder} onChange={this.handleUpdateFolder.bind(this, 'Folder')}>
-
-            {this.state.SelectOptions.map(folderOption => {
-              return (
-                <option key={folderOption} value={folderOption}>{folderOption}</option>
-              );
-            })}
-
-            <option value="None">None</option>
-            </select>
+            <FolderMenu
+              header={this.state.Folder}
+              defaultView="None"
+              updateView={this.props.updateFolder}
+              updateRow={this.handleUpdateFolder.bind(this)}
+              folders={this.state.SelectOptions}
+              folderId={this.state._id}
+            />
           </td>
         </tr>
       );

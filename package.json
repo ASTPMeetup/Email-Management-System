@@ -7,7 +7,8 @@
     "bootstrap": "^3.3.7",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.8",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "wow.js": "^1.2.2"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"
