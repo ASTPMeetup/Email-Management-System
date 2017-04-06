@@ -1,28 +1,47 @@
 html, body {
-  padding: 50px;
+  padding: 20px;
   margin: 0px;
   font-family: "Segoe UI";
   font-size: 16px;
 }
 
+.resources {
+  display: flex;
+}
+
+span {
+  color: #fff;
+  margin: -10px 25px 10px 10px;
+}
+
 .search_input {
   font-size: 16px;
-  height: 23;
-  line-height: 1.95em;
+  height: 2.1em;
+  line-height: 2.1em;
   text-decoration: none;
   border: 1px solid #ccc;
   border-radius: 4px;
   color: #737373;
   outline: none;
-  background-color: transparent;
-  width: 30%;
+  background-color: #fff;
+  width: 60%;
+}
+
+.table-responsive {
+  padding: 10px;
+  border: 1px solid #777;
 }
 
 .disabled_row, .disabled_row:hover, .disabled_row:focus {
   background: #cccccc !important;
 }
 
-#search_bar, #view_selector {
-  float: none;
-  margin: 0 auto;
+#search_bar {
+  width: 100%;
+}
+
+#heading {
+  padding: 15px 0px 15px 0px;
+  border-radius: 4px;
+  background: #777;
 }

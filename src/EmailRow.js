@@ -23,6 +23,13 @@ class EmailRow extends Component {
   }
 
   handleCheckBoxEvent(event) {
+    var targetRow = event.target.parentNode.parentNode;
+    var rowSelectBox = targetRow.lastChild.firstChild;
+
+    //toggle row view and select box functionality based on check box event
+    rowSelectBox.disabled = !rowSelectBox.disabled;
+    targetRow.classList.toggle('disabled_row');
+
     this.setState({checkStatus: event.target.checked});
   }
 
@@ -50,7 +57,7 @@ class EmailRow extends Component {
 
             {this.state.SelectOptions.map(folderOption => {
               return (
-                <option value={folderOption}>{folderOption}</option>
+                <option key={folderOption} value={folderOption}>{folderOption}</option>
               );
             })}
 
