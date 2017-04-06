@@ -2,41 +2,44 @@ import React, { Component } from 'react';
 import './App.css';
 import EmailRow from './EmailRow';
 import SearchBar from './SearchBar';
-import axios from 'axios';
 import localJSON from '../json/mock_rp_data.json';
+// import axios from 'axios';
 
 class App extends Component {
 
   constructor() {
   super();
   this.state = {
+    dataController: localJSON,
     viewController: [],
     folderOptions: [],
-    homeEmails: [],
-    shoppingEmails: [],
-    financeEmails: [],
-    travelEmails: [],
-    MiscEmails: [],
-    searchText: ''
+    defaultView: 'Show All',
+    searchText: '',
+    viewHeader: ''
     };
   }
 
   componentDidMount() {
+    var data = this.state.dataController;
     var uniqueFolders = [];
     var uniqueId = 0;
-    localJSON.forEach(function(obj){
-      obj['id'] = uniqueId;
+    data.forEach(function(obj){
+      obj['_id'] = uniqueId;
       if (uniqueFolders.indexOf(obj.folder) < 0) {
         uniqueFolders.push(obj.folder);
       }
       uniqueId++;
     });
 
-    uniqueFolders.push('none');
-    this.setState({...this.state, folderOptions: uniqueFolders, viewController: localJSON});
+    this.setState({...this.state, folderOptions: uniqueFolders, viewController: data,
+                    dataController: data, viewHeader: this.state.defaultView});
   }
 
-  getSearchResultsList() {
+  componentDidUpdate() {
+    console.log(this.state.viewController.length);
+  }
+
+getSearchResultsList() {
   // Remove any white space, and convert the searchText to lowercase
   const term = this.state.searchText.trim().toLowerCase();
   const allEmails = this.state.viewController;
@@ -58,14 +61,61 @@ handleSearch(event) {
   });
 }
 
-  render() {
+updateFolders(updatedFolder, editId) {
+  const all_emails = this.state.dataController;
+  const all_ids = all_emails.map(email => email._id);
+  const emailToEditIndex = all_ids.indexOf(editId);
+
+  all_emails[emailToEditIndex].folder = updatedFolder;
+  this.setState({ ...this.state, dataController: all_emails});
+  console.log(all_emails[emailToEditIndex].folder);
+}
+
+updateViewChange(event) {
+  var newFolderViewRequest = event.target.value;
+  var all_data = this.state.dataController;
+
+  if(newFolderViewRequest !== this.state.defaultView) {
+    var uniqueFolderView = all_data.filter(function(obj){
+      return obj.folder === newFolderViewRequest;
+    });
+    this.setState({...this.state, viewController: uniqueFolderView, viewHeader: newFolderViewRequest});
+  }
+  else {
+    this.setState({...this.state, viewController: all_data, viewHeader: this.state.defaultView});
+  }
+}
+
+render() {
     return (
       <div className="App">
         <div className="container">
         <div className="row">
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-          <div>
-            <SearchBar value={this.state.searchText} onFocus="window.scroll(0,0)" onChange={this.handleSearch.bind(this)} />
+          <div className="container">
+            <div className="row">
+              <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div id="view_selector">
+                  <select className="form-control" value={this.state.viewHeader} onChange={this.updateViewChange.bind(this)}>
+                    <option value={this.state.defaultView}>{this.state.defaultView}</option>
+
+                    {this.state.folderOptions.map(folder => {
+                      return (
+                        <option value={folder}>{folder}</option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+              <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                <div id="search_bar">
+                  <SearchBar value={this.state.searchText}
+                              onFocus="window.scroll(0,0)"
+                              onChange={this.handleSearch.bind(this)
+                  } />
+                </div>
+              </div>
+            </div>
           </div>
           <br />
           <div className="table-responsive">
@@ -83,14 +133,15 @@ handleSearch(event) {
                   {this.getSearchResultsList().map(emailRw => {
                     return (
                       <EmailRow
-                        key={emailRw.id}
-                        id={emailRw.id}
+                        key={emailRw._id}
+                        _id={emailRw._id}
                         folderOptions={this.state.folderOptions}
                         organize={emailRw.organize}
                         sender={emailRw.sender}
                         domain={emailRw.domain}
                         email={emailRw.email}
                         folder={emailRw.folder}
+                        updateFolder={this.updateFolders.bind(this)}
                       />
                     );
                   })}
