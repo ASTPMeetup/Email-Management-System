@@ -22,42 +22,40 @@ class App extends Component {
 
   componentDidMount() {
     axios.get(serverURL + appKey).then((res)=> {
-      var data = res.data;
-      var uniqueFolders = [];
-      var uniqueId = 0;
+        var data = res.data;
+        var uniqueFolders = [];
 
-      data.forEach(function(obj){
+        data.forEach(function(obj){
 
-        //search all objects to compile folder categories based on avaiable folder options, with "None"
-        // being an invalid folders category
-        if (uniqueFolders.indexOf(obj.folder) < 0 && obj.folder !== "None") {
-          uniqueFolders.push(obj.folder);
-        }
-      });
+          //search all objects to compile folder categories based on avaiable folder options, with "None"
+          // being an invalid folders category
+          if (uniqueFolders.indexOf(obj.folder) < 0 && obj.folder !== "None") {
+            uniqueFolders.push(obj.folder);
+          }
+        });
 
-      this.setState({...this.state, folderOptions: uniqueFolders, viewController: data,
-                      dataController: data, viewHeader: this.state.defaultView});
+        this.setState({...this.state, folderOptions: uniqueFolders, viewController: data,
+                        dataController: data, viewHeader: this.state.defaultView});
     })
     .catch(function(error){console.log(error);});
   }
 
-  //complies search results
+  //handles search results change
   getSearchResultsList() {
-    // Remove any white space, and convert the searchText to lowercase
-    const term = this.state.searchText.trim().toLowerCase();
+    const searchInput = this.state.searchText.trim().toLowerCase();
     const allEmails = this.state.viewController;
 
-    // If our term is an empty string, we want to return all
-    if (!term) { return allEmails; }
+    // If nothing is being search for, we want to return all
+    if (!searchInput) { return allEmails; }
 
-    // Filter will return a new array for email list. If searched text has
-    // an index value in a email in email list, it will return those respective emails.
+    // Filter will return a new array for the EmailRow components. If searched text has
+    // an index value in a sender listed, it will return those respective email rows.
     return allEmails.filter(obj => {
-      return obj.sender.toLowerCase().search(term) >= 0;
+      return obj.sender.toLowerCase().search(searchInput) >= 0;
     });
   }
 
-  //handles search
+  //handles search input change
   handleSearch(event) {
     this.setState({
       viewController: this.state.viewController,
@@ -66,20 +64,16 @@ class App extends Component {
   }
 
   //to update single row folder view
-  updateFolderView(newViewRequest, FolderId) {
+  updateFolderView(newFolderRequest, FolderId) {
     const all_emails = this.state.dataController;
     const all_ids = all_emails.map(email => email._id);
     const emailToEditIndex = all_ids.indexOf(FolderId);
-    const newEmailObj = all_emails[emailToEditIndex];
 
-    console.log(newViewRequest);
-    console.log(FolderId);
+    all_emails[emailToEditIndex].folder = newFolderRequest;
 
-
-    all_emails[emailToEditIndex].folder = newViewRequest;
-
+    // update object with it's unique folder id and index value
     axios.put(serverURL +'/'+ FolderId + appKey, all_emails[emailToEditIndex]).then((res)=> {
-      this.setState({ ...this.state, dataController: all_emails});
+        this.setState({ ...this.state, dataController: all_emails});
     })
     .catch(function(error){console.log(error);});
   }
@@ -87,23 +81,22 @@ class App extends Component {
   // to update entire view based on folder selection
   updateViewChange(newViewRequest, FolderId) {
     var all_data = this.state.dataController;
+    var viewControllerFolder = this.state.defaultView;
+    var uniqueFolderView = [];
 
     //filter view by folder category unless the selection option is 'Show All'
     if(newViewRequest !== this.state.defaultView) {
-      var uniqueFolderView = all_data.filter(function(obj){
+      uniqueFolderView = all_data.filter(function(obj){
         return obj.folder === newViewRequest;
       });
-      this.setState({...this.state,
-        viewController: uniqueFolderView,
-        viewHeader: newViewRequest
-      });
+      viewControllerFolder = newViewRequest;
     }
-    else {
-      this.setState({...this.state,
-        viewController: all_data,
-        viewHeader: this.state.defaultView
-      });
-    }
+    else { uniqueFolderView = all_data; }
+
+    this.setState({...this.state,
+      viewController: uniqueFolderView,
+      viewHeader: viewControllerFolder
+    });
   }
 
   render() {
@@ -132,8 +125,8 @@ class App extends Component {
               <form className="form-inline">
                 <SearchBar
                   value={this.state.searchText}
-                  onFocus="window.scroll(0,0)"
                   onChange={this.handleSearch.bind(this)}
+                  onFocus="window.scroll(0,0)"
                 />
               </form>
             </div>
@@ -141,7 +134,7 @@ class App extends Component {
         </div>
       </div>
       </section>
-      <br />
+      <br/>
       <section className="table-responsive">
         <table className="table table-hover">
           <thead>
@@ -160,20 +153,20 @@ class App extends Component {
                   <EmailRow
                     key={emailRw._id}
                     id={emailRw._id}
-                    folderOptions={this.state.folderOptions}
                     organize={emailRw.organize}
                     sender={emailRw.sender}
                     domain={emailRw.domain}
                     email={emailRw.email}
                     folder={emailRw.folder}
+                    folderOptions={this.state.folderOptions}
                     updateFolder={this.updateFolderView.bind(this)}
                   />
                 );
               })}
-            </tbody>
-          </table>
-        </section>
-      </main>
+          </tbody>
+        </table>
+      </section>
+    </main>
     );
   }
 }

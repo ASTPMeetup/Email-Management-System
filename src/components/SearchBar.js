@@ -4,7 +4,7 @@ class SearchBar extends Component {
   render(){
     return (
         <input
-          aria-labelledby="email_search"
+          aria-labelledby="sender-search"
           className='search_input'
           type="text"
           value={this.props.value}

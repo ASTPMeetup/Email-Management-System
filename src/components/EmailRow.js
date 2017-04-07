@@ -14,7 +14,7 @@ class EmailRow extends Component {
       Folder: this.props.folder,
       SelectOptions: this.props.folderOptions,
       CheckBox: true,
-      successDisplay: false,
+      stateChangeAnimation: false,
       checkStatus: true,
       updatedFolder: false
     };
@@ -34,26 +34,33 @@ class EmailRow extends Component {
 
   //update folder view if FolderMenu component updates
   handleUpdateFolder(newFolder) {
-      this.setState({Folder: newFolder, successDisplay: true});
+      this.setState({Folder: newFolder, stateChangeAnimation: true});
   }
 
-  resetSuccessDisplay() {
-    if (this.state.successDisplay) {
-      this.setState({successDisplay: false});
+  //remove animation image after animation is complete
+  toggleStateChangeAnimation() {
+    if (this.state.stateChangeAnimation) {
+      this.setState({stateChangeAnimation: false});
     }
   }
 
    render(){
       return (
         <tr role="list">
-          <td role="listitem" className="checkBox"><input type="checkbox" onChange={this.handleCheckBoxEvent.bind(this)} checked={this.state.checkStatus}/></td>
+          <td role="listitem" className="checkBox">
+            <input type="checkbox" onChange={this.handleCheckBoxEvent.bind(this)} checked={this.state.checkStatus}/>
+          </td>
+
           <td role="listitem">{this.state.Sender}</td>
           <td role="listitem">{this.state.Domain}</td>
           <td role="listitem">{this.state.Email}</td>
-          <td role="listitem">{this.state.successDisplay ? <img className="img-responsive status-active" src="../upload.gif"/> : <div className="status-null"></div>}</td>
-          <td role="listitem" className="rowFolders" onMouseOver={this.resetSuccessDisplay.bind(this)}>
 
+          <td role="listitem">{this.state.stateChangeAnimation ?
+            <img onAnimationEnd={this.toggleStateChangeAnimation.bind(this)} className="img-responsive status-active" src="../upload.gif" role="presentation" alt="success animation"/>
+            : <div className="status-null"></div>}
+          </td>
 
+          <td role="listitem" className="rowFolders">
             <FolderMenu
               header={this.state.Folder}
               folders={this.state.SelectOptions}
