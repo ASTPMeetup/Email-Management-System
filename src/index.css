@@ -5,15 +5,6 @@ html, body {
   font-size: 16px;
 }
 
-.resources {
-  display: flex;
-}
-
-#counter {
-  color: #fff;
-  margin: -10px 25px 10px 10px;
-}
-
 .search_input {
   font-size: 16px;
   height: 2.1em;
@@ -24,7 +15,7 @@ html, body {
   color: #737373;
   outline: none;
   background-color: #fff;
-  width: 60%;
+  width: 100%;
 }
 
 .table-responsive {
@@ -58,11 +49,22 @@ html, body {
 
 
 #search_bar {
-  width: 100%;
+  width: 90%;
 }
 
 #heading {
   padding: 15px 0px 15px 0px;
   border-radius: 4px;
   background: #777;
+}
+
+#counter {
+  color: #fff;
+  margin: -10px 25px 10px 10px;
+}
+
+@media (max-width: 768px) {
+  #counter { display: none; }
+  #search_bar { width: 100% }
+  #view_selector { margin-bottom: 10px; }
 }

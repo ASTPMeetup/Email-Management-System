@@ -5,7 +5,7 @@ class SearchBar extends Component {
     return (
         <input
           aria-labelledby="email_search"
-          className='search-bar search_input'
+          className='search_input'
           type="text"
           value={this.props.value}
           placeholder=" Search for a sender.."

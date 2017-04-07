@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import EmailRow from './EmailRow';
 import FolderMenu from './FolderMenu';
 import SearchBar from './SearchBar';
-import localJSON from '../mock_rp_data.json';
 import axios from 'axios';
 const serverURL = "https://openws.herokuapp.com/email-manager";
 const appKey = "?apiKey=8fa0e46f0361117d65d91d6032391324";
@@ -114,7 +113,7 @@ class App extends Component {
        <section id="heading">
         <div className="container">
           <div className="row resources">
-            <div className="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+            <div className="col-xs-12 col-sm-6 col-md-5 col-lg-4">
               <div id="view_selector">
                 <form className="form-inline">
                   <span id="counter">Folder Count: ({this.state.viewController.length})</span>
@@ -128,7 +127,7 @@ class App extends Component {
               </form>
             </div>
           </div>
-          <div className="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+          <div className="col-xs-12 col-sm-6 col-md-7 col-lg-8">
             <div id="search_bar">
               <form className="form-inline">
                 <SearchBar
