@@ -9,7 +9,7 @@ html, body {
   display: flex;
 }
 
-span {
+#counter {
   color: #fff;
   margin: -10px 25px 10px 10px;
 }
@@ -35,6 +35,27 @@ span {
 .disabled_row, .disabled_row:hover, .disabled_row:focus {
   background: #cccccc !important;
 }
+
+.status-active {
+  width: 35px;
+  opacity: 0;
+  animation: fade-img 2s linear;
+  margin-top: 10px;
+}
+
+.status-null {
+  width: 35px;
+  height: 25px;
+  margin: 0px;
+}
+
+@keyframes fade-img {
+  0% { opacity: 0}
+  25% { opacity: 1; margin-top: 0px }
+  75% { opacity: 1; margin-top: 10px}
+  100% { opacity: 0 }
+}
+
 
 #search_bar {
   width: 100%;

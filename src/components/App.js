@@ -3,14 +3,16 @@ import EmailRow from './EmailRow';
 import FolderMenu from './FolderMenu';
 import SearchBar from './SearchBar';
 import localJSON from '../mock_rp_data.json';
-// import axios from 'axios' when attaching application to server-side;
+import axios from 'axios';
+const serverURL = "https://openws.herokuapp.com/email-manager";
+const appKey = "?apiKey=8fa0e46f0361117d65d91d6032391324";
 
 class App extends Component {
 
   constructor() {
     super();
     this.state = {
-      dataController: localJSON,
+      dataController: [],
       viewController: [],
       folderOptions: [],
       defaultView: 'Show All',
@@ -20,24 +22,24 @@ class App extends Component {
   }
 
   componentDidMount() {
-    var data = this.state.dataController;
-    var uniqueFolders = [];
-    var uniqueId = 0;
+    axios.get(serverURL + appKey).then((res)=> {
+      var data = res.data;
+      var uniqueFolders = [];
+      var uniqueId = 0;
 
-    data.forEach(function(obj){
-      //give all json objects unqiue ids
-      obj['_id'] = uniqueId;
+      data.forEach(function(obj){
 
-      //search all objects to compile folder categories based on avaiable options
-      if (uniqueFolders.indexOf(obj.folder) < 0) {
-        uniqueFolders.push(obj.folder);
-      }
-      uniqueId++;
-    });
+        //search all objects to compile folder categories based on avaiable folder options, with "None"
+        // being an invalid folders category
+        if (uniqueFolders.indexOf(obj.folder) < 0 && obj.folder !== "None") {
+          uniqueFolders.push(obj.folder);
+        }
+      });
 
-    this.setState({...this.state, folderOptions: uniqueFolders, viewController: data,
-                    dataController: data, viewHeader: this.state.defaultView});
-
+      this.setState({...this.state, folderOptions: uniqueFolders, viewController: data,
+                      dataController: data, viewHeader: this.state.defaultView});
+    })
+    .catch(function(error){console.log(error);});
   }
 
   //complies search results
@@ -69,9 +71,18 @@ class App extends Component {
     const all_emails = this.state.dataController;
     const all_ids = all_emails.map(email => email._id);
     const emailToEditIndex = all_ids.indexOf(FolderId);
+    const newEmailObj = all_emails[emailToEditIndex];
+
+    console.log(newViewRequest);
+    console.log(FolderId);
+
 
     all_emails[emailToEditIndex].folder = newViewRequest;
-    this.setState({ ...this.state, dataController: all_emails});
+
+    axios.put(serverURL +'/'+ FolderId + appKey, all_emails[emailToEditIndex]).then((res)=> {
+      this.setState({ ...this.state, dataController: all_emails});
+    })
+    .catch(function(error){console.log(error);});
   }
 
   // to update entire view based on folder selection
@@ -87,7 +98,6 @@ class App extends Component {
         viewController: uniqueFolderView,
         viewHeader: newViewRequest
       });
-
     }
     else {
       this.setState({...this.state,
@@ -107,7 +117,7 @@ class App extends Component {
             <div className="col-xs-5 col-sm-5 col-md-5 col-lg-5">
               <div id="view_selector">
                 <form className="form-inline">
-                  <span>Folder Count: ({this.state.viewController.length})</span>
+                  <span id="counter">Folder Count: ({this.state.viewController.length})</span>
                   <FolderMenu
                     header={this.state.viewHeader}
                     defaultView={this.state.defaultView}
@@ -138,9 +148,10 @@ class App extends Component {
           <thead>
             <tr>
               <th className="list_headers">Organize</th>
-              <th className="list_headers">Sender<span className="caret"></span></th>
-              <th className="list_headers">Domain<span className="caret"></span></th>
-              <th className="list_headers">Email<span className="caret"></span></th>
+              <th className="list_headers">Sender</th>
+              <th className="list_headers">Domain</th>
+              <th className="list_headers">Email</th>
+              <th className="list_headers"></th>
               <th className="list_headers">Folder</th>
             </tr>
           </thead>
@@ -149,7 +160,7 @@ class App extends Component {
                 return (
                   <EmailRow
                     key={emailRw._id}
-                    _id={emailRw._id}
+                    id={emailRw._id}
                     folderOptions={this.state.folderOptions}
                     organize={emailRw.organize}
                     sender={emailRw.sender}

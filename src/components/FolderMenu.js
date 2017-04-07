@@ -13,6 +13,7 @@ class FolderMenu extends Component {
 
   updateRowState(newFolder) {
     this.props.updateRow(newFolder);
+
   }
 
   render(){
