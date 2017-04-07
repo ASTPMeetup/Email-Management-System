@@ -1,1 +1,1 @@
-Activate app with `npm start`!
+Clone and active app with `npm start`.
