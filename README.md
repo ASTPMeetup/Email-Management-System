@@ -1,6 +1,8 @@
 # ReactJS Email Management System
 
-![email-management-system](https://d2j1h026cw6z0i.cloudfront.net/img/brello.jpg "Email Management System")
+
+![email-management-system](public/email-management-system.jpg)
+
 
 ## Instructions
 
