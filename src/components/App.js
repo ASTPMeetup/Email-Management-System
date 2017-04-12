@@ -107,29 +107,25 @@ class App extends Component {
         <div className="container">
           <div className="row resources">
             <div className="col-xs-12 col-sm-6 col-md-5 col-lg-4">
-              <div id="view_selector">
-                <form className="form-inline">
-                  <span id="counter">Folder Count: ({this.state.viewController.length})</span>
-                  <FolderMenu
-                    header={this.state.viewHeader}
-                    defaultView={this.state.defaultView}
-                    folders={this.state.folderOptions}
-                    updateView={this.updateViewChange.bind(this)}
-                    folderId="null"
-                  />
-              </form>
-            </div>
+              <form name="folders" className="form-inline">
+                <span id="counter">Folder Count: ({this.state.viewController.length})</span>
+                <FolderMenu
+                  header={this.state.viewHeader}
+                  defaultView={this.state.defaultView}
+                  folders={this.state.folderOptions}
+                  updateView={this.updateViewChange.bind(this)}
+                  folderId="null"
+                />
+            </form>
           </div>
           <div className="col-xs-12 col-sm-6 col-md-7 col-lg-8">
-            <div id="search_bar">
-              <form className="form-inline">
-                <SearchBar
-                  value={this.state.searchText}
-                  onChange={this.handleSearch.bind(this)}
-                  onFocus="window.scroll(0,0)"
-                />
-              </form>
-            </div>
+            <form name="search" className="form-inline">
+              <SearchBar
+                value={this.state.searchText}
+                onChange={this.handleSearch.bind(this)}
+                onFocus="window.scroll(0,0)"
+              />
+            </form>
           </div>
         </div>
       </div>
